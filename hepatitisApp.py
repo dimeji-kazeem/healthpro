@@ -49,8 +49,8 @@ def load_model(model_file):
 
 
 # ML Interpretation
-import lime
-import lime.lime_tabular
+#import lime
+#import lime.lime_tabular
 
 html_temp = """
 		<div style="background-color:{};padding:10px;border-radius:10px">
@@ -131,12 +131,13 @@ def main():
 
     menu = ["Home", "Login", "SignUp"]
     submenu = ["Visualization", "Prediction", "Metrics"]
-
+    
     choice = st.sidebar.selectbox("Menu", menu)
     if choice == "Home":
         st.subheader("Home")
         st.text("What is Hepatitis?")
-        
+        st.markdown(descriptive_message_temp,unsafe_allow_html=True)
+    
     elif choice == "Login":
         username = st.sidebar.text_input("Username")
         password = st.sidebar.text_input("Password", type= 'password')
@@ -170,6 +171,11 @@ def main():
                     antivirals = st.radio("Do You Take Antivirals?",tuple(feature_dict.keys()))
                     fatigue = st.radio("Do You Have Fatigue",tuple(feature_dict.keys()))
                     spiders = st.radio("Presence of Spider Naeve",tuple(feature_dict.keys()))
+                    malaise = st.radio("Do You experience some discomfort?",tuple(feature_dict.keys()))				
+                    liverfirm = st.radio("Presence of Liver Firm?",tuple(feature_dict.keys()))
+                    anorexia = st.radio("Presence of Anorexia",tuple(feature_dict.keys()))
+                    liverbig = st.radio("Presence of LiverBig",tuple(feature_dict.keys()))
+                    spleenpalpable = st.radio("Presence of spleen Palpable?",tuple(feature_dict.keys()))
                     ascites = st.selectbox("Ascities",tuple(feature_dict.keys()))
                     varices = st.selectbox("Presence of Varices",tuple(feature_dict.keys()))
                     bilirubin = st.number_input("bilirubin Content",0.0,8.0)
@@ -178,10 +184,10 @@ def main():
                     albumin = st.number_input("Albumin",0.0,6.4)
                     protime = st.number_input("Prothrombin Time",0.0,100.0)
                     histology = st.selectbox("Histology",tuple(feature_dict.keys()))
-                    feature_list = [age,get_value(sex,gender_dict),get_fvalue(steroid),get_fvalue(antivirals),get_fvalue(fatigue),get_fvalue(spiders),get_fvalue(ascites),get_fvalue(varices),bilirubin,alk_phosphate,sgot,albumin,int(protime),get_fvalue(histology)]
+                    feature_list = [age,get_value(sex,gender_dict),get_fvalue(steroid),get_fvalue(antivirals), get_fvalue(spleenpalpable),get_fvalue(fatigue),get_fvalue(liverfirm),get_fvalue(malaise),get_fvalue(liverbig),get_fvalue(anorexia),get_fvalue(spiders),get_fvalue(ascites),get_fvalue(varices),bilirubin,alk_phosphate,sgot,albumin,int(protime),get_fvalue(histology)]
                     st.write(len(feature_list))
                     st.write(feature_list)
-                    pretty_result = {"age":age,"sex":sex,"steroid":steroid,"antivirals":antivirals,"fatigue":fatigue,"spiders":spiders,"ascites":ascites,"varices":varices,"bilirubin":bilirubin,"alk_phosphate":alk_phosphate,"sgot":sgot,"albumin":albumin,"protime":protime,"histolog":histology}
+                    pretty_result = {"age":age,"sex":sex,"steroid":steroid,"antivirals":antivirals,"fatigue":fatigue,"spleenpalpable":spleenpalpable, "liverfirm":liverfirm,"malaise":malaise,"liverbig":liverbig,"anorexia":anorexia,"spiders":spiders,"ascites":ascites,"varices":varices,"bilirubin":bilirubin,"alk_phosphate":alk_phosphate,"sgot":sgot,"albumin":albumin,"protime":protime,"histolog":histology}
                     st.json(pretty_result)
                     single_sample = np.array(feature_list).reshape(1,-1)
 
@@ -189,15 +195,15 @@ def main():
                     model_choice = st.selectbox("Select Model",["LR","KNN","DecisionTree"])
                     if st.button("Predict"):
                         if model_choice == "KNN":
-                            loaded_model = load_model("models/knn_hepB_model.pkl")
+                            loaded_model = load_model("model/knn_hepatitisB_model.pkl")
                             prediction = loaded_model.predict(single_sample)
                             pred_prob = loaded_model.predict_proba(single_sample)
                         elif model_choice == "DecisionTree":
-                            loaded_model = load_model("models/decision_tree_clf_hepB_model.pkl")
+                            loaded_model = load_model("model/dt_clf_hepatitisB_model.pkl")
                             prediction = loaded_model.predict(single_sample)
                             pred_prob = loaded_model.predict_proba(single_sample)
                         else:
-                            loaded_model = load_model("models/logistic_regression_hepB_model.pkl")
+                            loaded_model = load_model("model/lr_hepatitisB_model.pkl")
                             prediction = loaded_model.predict(single_sample)
                             pred_prob = loaded_model.predict_proba(single_sample)
 
